@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -45,30 +47,76 @@ const reviews: Review[] = [
 const accents = ["ink-coral", "ink-violet", "ink-green", "ink-blue", "ink-gold"];
 const rotations = ["tilt-left", "tilt-right", "tilt-soft-left", "tilt-soft-right"];
 
+const doctorReplies: Record<string, string> = {
+  "Jayesh Mal": "Jayesh, Thank you for trusting Dr Somani's Homoeopathy for your health concerns. Always wishing you the best of health.",
+  "Ankit Purohit": "Ankit, Thank you for trusting Dr. Somani’s Homoeopathy for your son’s treatment. We're glad to know that homoeopathy helped him.",
+  "Kanhaiya Tela": "Kanhaiya, Thank you for your detailed feedback. We are happy to know that homoeopathic medicines helped you with your complaints. Always wishing you the best of health.",
+  "Siddhi Jain": "Siddhi, Thank you for trusting Dr Somani's Homoeopathy! Always here to support your healthy journey.",
+  "Radhika Joshi": "Radhika, Thank you for sharing your experience with Dr Somani’s Homoeopathy! We’re glad to know that homoeopathy helped you for your skin ailments.",
+  "Namrata Mahamunkar": "Namrata, Thank you for your kind words. We are glad that your leg pain and shoulder pain is now better with homoeopathy.",
+  "Dhanendra kumar Bhurtiya": "Dhanendra, Thank you for choosing Dr. Somani’s Homoeopathy. Your recovery from Allergic Rhinitis makes us really happy!",
+  "Seema Dhage": "Seema, Thank you for sharing your experience with Dr Somani’s Homoeopathy. We’re glad to know that you had a positive experience with your hair fall treatment.",
+  "Chaitali Bihani": "Chaitali, Thank you for trusting Dr. Somani’s Homoeopathy for your treatment. We're glad to know that the use of inhalers has reduced now.",
+  "Mukund Chandak": "Mukund, We are glad to know that homeopathic medicines helped you for your digestion issues.",
+  "Tanuj Kabra": "Tanuj, Thank you for your valuable feedback.",
+  "Prashant Sulkshane": "Prashant, Thanks for your valuable feedback.",
+  "Dr. Suyog Somani": "Dr Suyog, Thank you for your kind words!",
+  "Vedika Raskar": "Vedika, Thank you for sharing your experience with Dr Somani's Homoeopathy.",
+  "Dilip Malpani": "Dilip, We are glad to know that homeopathic medicines gave you long lasting relief from your allergies.",
+  "Nutan Zawar": "Nutan, Thank you for trusting Dr Somani’s Homoeopathy for your mouth ulcers treatment.",
+  "Rushikesh Suryawanshi": "Rushikesh, Thanks for your kind words.",
+  "Akshay Soni": "Akshay, Thank you for choosing Dr. Somani’s Homoeopathy for your hairfall treatment.",
+  "Jagruti Bari": "Jagruti, Thank you for consistently trusting Dr Somani's Homoeopathy.",
+  "Mayur Gavali": "Mayur, Thank you for trusting Dr Somani's Homeopathy for your mother's recovery.",
+  "Madhuri Mundada": "Madhuri, We really appreciate your feedback and trust in Dr. Somani’s Homoeopathy.",
+  "Mo alim Salmani": "Alim, Thank you for your kind words! We’re delighted that your Alopecia patches improved with Homoeopathy.",
+  "Hassan Bhai": "Hassan, Thank you for your valuable feedback and trust in Dr Somani's Homoeopathy.",
+};
+
 function GoogleMark() {
   return <span className="google-mark" aria-label="Google">G</span>;
 }
 
 function ReviewCard({ review, index, duplicate = false }: { review: Review; index: number; duplicate?: boolean }) {
+  const [expanded, setExpanded] = useState(false);
+  const reply = doctorReplies[review.name];
+
   return (
     <article
-      className={`review-card ${rotations[index % rotations.length]}`}
+      className={`review-card ${rotations[index % rotations.length]}${expanded ? " is-expanded" : ""}`}
       aria-hidden={duplicate || undefined}
     >
-      <div className="paper-holes" aria-hidden="true" />
       <header className="review-card__header">
-        <div className={`review-card__account ${accents[index % accents.length]}`}>
-          <span className="review-card__stars" aria-label="5 out of 5 stars">★★★★★</span>
+        <span className={`review-card__avatar ${accents[index % accents.length]}`} aria-hidden="true">{review.name.charAt(0)}</span>
+        <div className="review-card__account">
           <strong>{review.name}</strong>
           <small>{review.meta}</small>
         </div>
         <GoogleMark />
       </header>
-      <blockquote>{review.text}</blockquote>
-      <footer>
+      <div className="review-card__rating">
+        <span className="review-card__stars" aria-label="5 out of 5 stars">★★★★★</span>
         <span>{review.time}</span>
-        <span className="verified-mark">verified</span>
-      </footer>
+      </div>
+      <div className="review-card__body">
+        <blockquote>{review.text}</blockquote>
+        {expanded && reply ? (
+          <div className="doctor-reply">
+            <strong>Response from Dr. Somani</strong>
+            <p>{reply}</p>
+          </div>
+        ) : null}
+      </div>
+      <Button
+        type="button"
+        variant="link"
+        size="sm"
+        className="review-card__toggle"
+        onClick={() => setExpanded((current) => !current)}
+        tabIndex={duplicate ? -1 : undefined}
+      >
+        {expanded ? "Show less" : "Show more"}
+      </Button>
     </article>
   );
 }
@@ -90,10 +138,9 @@ function ReviewsPage() {
     <main className="review-page">
       <Doodles />
       <section className="review-intro">
-        <span className="eyebrow">Patient notes · Google reviews</span>
-        <h1>Kind words, <em>kept close.</em></h1>
-        <p>Real experiences shared by patients of Dr. Antim &amp; Dr. Kushal Somani.</p>
-        <div className="scribble" aria-hidden="true" />
+        <span className="eyebrow">Patient reviews</span>
+        <h1>Verified Experiences. <em>Real<br />Healing Stories.</em></h1>
+        <p>Authentic Google reviews from patients treated by Dr. Antim &amp; Dr. Kushal Somani.</p>
       </section>
 
       <section className="review-loop" aria-label="Patient reviews">
